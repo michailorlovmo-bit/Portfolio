@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - TechStore{% endblock %}
+
+{% block content %}
+<section class="product-detail">
+    <div class="container">
+        <div class="product-detail-grid">
+            <div class="product-image">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            </div>
+
+            <div class="product-details">
+                <h1>{{ product.name }}</h1>
+                <p class="category">Category: {{ product.category }}</p>
+                <p class="price">${{ "%.2f"|format(product.price) }}</p>
+
+                <div class="description">
+                    <h3>Description</h3>
+                    <p>{{ product.description }}</p>
+                </div>
+
+                <p class="stock">
+                    {% if product.stock > 0 %}
+                        <span class="in-stock">In Stock ({{ product.stock }} available)</span>
+                    {% else %}
+                        <span class="out-of-stock">Out of Stock</span>
+                    {% endif %}
+                </p>
+
+                <div class="quantity-selector">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" value="1" min="1" max="{{ product.stock }}">
+                </div>
+
+                <div class="product-actions">
+                    {% if product.stock > 0 %}
+                        <button class="btn btn-primary add-to-cart-detail" data-product-id="{{ product.id }}">
+                            Add to Cart
+                        </button>
+                    {% else %}
+                        <button class="btn btn-primary" disabled>Out of Stock</button>
+                    {% endif %}
+                    <a href="/products" class="btn btn-secondary">Back to Products</a>
+                </div>
+
+                <div class="message" id="message"></div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+{% endblock %}
