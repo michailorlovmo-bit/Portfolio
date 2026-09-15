@@ -264,3 +264,13 @@ resubmit. Managers can always override via the phase task page.
   rather than repeated inline utility soup, so the look stays consistent
   as pages get added. The UI font is Inter (self-hosted via `next/font`,
   Greek subset included).
+
+## Roadmap
+
+- **Sub-contractor sub-category.** Staff accounts are tagged with one of the
+  5 pipeline categories, but there's no way yet to say which company a
+  worker belongs to — everyone's treated as in-house. Next: add a
+  sub-contractor sub-category so outside crews can be assigned phases and
+  use the app the same way in-house staff do, while still being
+  identifiable as a specific subcontractor (for filtering, statistics, and
+  knowing who to bill/coordinate with).
