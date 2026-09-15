@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite has no native enum support, so these are plain strings; the allowed
+// values are enforced by zod / src/lib/categories.ts in application code.
+// Role: "MANAGER" | "STAFF"
+// PhaseTask.category: "SURVEY" | "EARTHWORKS" | "CONSTRUCTION" | "BLOWING" | "SPLICING"
+// PhaseTask.status: "LOCKED" | "TODO" | "IN_PROGRESS" | "SUBMITTED" | "DONE" | "NEEDS_REVISION"
+// PhaseReview.verdict: "APPROVED" | "NEEDS_REVISION" | "FLAGGED"
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("STAFF")
+  category     String? // one of the CATEGORIES keys in src/lib/categories.ts; null = unspecialized/manager
+  active       Boolean  @default(true)
+  canViewStats Boolean  @default(false) // company-wide statistics page access; granted per-account by an existing holder
+  createdAt    DateTime @default(now())
+
+  buildingsCreated  Building[]   @relation("BuildingsCreated")
+  telekomApprovals  Building[]   @relation("TelekomApprovals")
+  phaseTasksAssigned PhaseTask[] @relation("PhaseTasksAssigned")
+  uploadedFiles     PhaseFile[]
+  notifications     Notification[]
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Building {
+  id          String   @id @default(cuid())
+  name        String
+  address     String?
+  totalFloors Int
+  createdAt   DateTime @default(now())
+
+  createdById String
+  createdBy   User   @relation("BuildingsCreated", fields: [createdById], references: [id])
+
+  telekomApprovedAt   DateTime?
+  telekomApprovedById String?
+  telekomApprovedBy   User?     @relation("TelekomApprovals", fields: [telekomApprovedById], references: [id])
+
+  archived   Boolean   @default(false)
+  archivedAt DateTime?
+
+  bepEntries   BepEntry[]
+  bmoEntries   BmoEntry[]
+  cableEntries CableEntry[]
+  floorBoxes   FloorBox[]
+  phaseTasks   PhaseTask[]
+}
+
+model BepEntry {
+  id         String   @id @default(cuid())
+  buildingId String
+  building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  label      String
+  createdAt  DateTime @default(now())
+}
+
+model BmoEntry {
+  id         String   @id @default(cuid())
+  buildingId String
+  building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  label      String
+  createdAt  DateTime @default(now())
+}
+
+model CableEntry {
+  id         String   @id @default(cuid())
+  buildingId String
+  building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  label      String
+  createdAt  DateTime @default(now())
+}
+
+model FloorBox {
+  id          String   @id @default(cuid())
+  buildingId  String
+  building    Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  floorNumber Int
+  quantity    Int
+  type        String?
+  notes       String?
+}
+
+// Manager-editable, reusable per category. Copied into a PhaseChecklistItem
+// snapshot when a PhaseTask is created, so later template edits don't alter
+// checklists already in progress.
+model ChecklistTemplateItem {
+  id        String   @id @default(cuid())
+  category  String
+  label     String
+  order     Int
+  createdAt DateTime @default(now())
+}
+
+model PhaseTask {
+  id         String   @id @default(cuid())
+  buildingId String
+  building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+
+  category   String
+  orderIndex Int
+  status     String   @default("LOCKED")
+
+  assignedToId String?
+  assignedTo   User?   @relation("PhaseTasksAssigned", fields: [assignedToId], references: [id])
+
+  dueDate DateTime?
+
+  submissionNotes String?
+  submittedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  checklistItems PhaseChecklistItem[]
+  files          PhaseFile[]
+  reviews        PhaseReview[]
+  testReadings   PhaseTestReading[]
+}
+
+// Structured measurements (OTDR loss, power meter dBm, etc.) attached to the
+// current submission. Free-form label/value/unit so it fits any category's
+// instruments rather than assuming a fixed set of fields.
+model PhaseTestReading {
+  id          String    @id @default(cuid())
+  phaseTaskId String
+  phaseTask   PhaseTask @relation(fields: [phaseTaskId], references: [id], onDelete: Cascade)
+  label       String
+  value       String
+  unit        String?
+  createdAt   DateTime  @default(now())
+}
+
+model PhaseChecklistItem {
+  id          String    @id @default(cuid())
+  phaseTaskId String
+  phaseTask   PhaseTask @relation(fields: [phaseTaskId], references: [id], onDelete: Cascade)
+  label       String
+  order       Int
+}
+
+model PhaseFile {
+  id           String    @id @default(cuid())
+  phaseTaskId  String
+  phaseTask    PhaseTask @relation(fields: [phaseTaskId], references: [id], onDelete: Cascade)
+  uploadedById String
+  uploadedBy   User      @relation(fields: [uploadedById], references: [id])
+  filename     String
+  storedPath   String
+  mimeType     String
+  size         Int
+  createdAt    DateTime  @default(now())
+}
+
+model PhaseReview {
+  id               String    @id @default(cuid())
+  phaseTaskId      String
+  phaseTask        PhaseTask @relation(fields: [phaseTaskId], references: [id], onDelete: Cascade)
+  verdict          String
+  summary          String
+  feedback         String
+  filesNote        String?
+  checklistResults String // JSON: [{ label, satisfied, note }]
+  model            String
+  createdAt        DateTime  @default(now())
+}

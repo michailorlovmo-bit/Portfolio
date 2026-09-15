@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply text-slate-900;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  background: linear-gradient(180deg, #f3f6fc 0%, #f7f9fc 320px, #f8fafc 100%);
+  background-attachment: fixed;
+}
+
+::selection {
+  @apply bg-brand-200 text-brand-900;
+}
+
+.badge {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset;
+}
+.badge-approved {
+  @apply bg-emerald-50 text-emerald-700 ring-emerald-600/20;
+}
+.badge-revision {
+  @apply bg-amber-50 text-amber-700 ring-amber-600/20;
+}
+.badge-flagged {
+  @apply bg-rose-50 text-rose-700 ring-rose-600/20;
+}
+.badge-neutral {
+  @apply bg-slate-100 text-slate-600 ring-slate-500/15;
+}
+.badge-locked {
+  @apply bg-slate-50 text-slate-400 ring-slate-400/10;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-150 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98];
+}
+.btn-primary {
+  @apply btn bg-brand-600 text-white shadow-sm shadow-brand-600/20 hover:bg-brand-700 hover:shadow-md hover:shadow-brand-600/25;
+}
+.btn-secondary {
+  @apply btn border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50;
+}
+
+.card {
+  @apply rounded-xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5;
+}
+
+.card-link {
+  @apply card transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md hover:shadow-brand-900/5;
+}
+
+.input {
+  @apply block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-shadow focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
+}
+
+.label {
+  @apply mb-1 block text-sm font-medium text-slate-700;
+}
+
+.section-title {
+  @apply text-lg font-semibold text-slate-900;
+}
+
+.page-title {
+  @apply text-2xl font-semibold tracking-tight text-slate-900;
+}
+
+.muted {
+  @apply text-slate-500;
+}
+
+.progress-track {
+  @apply h-1.5 w-full overflow-hidden rounded-full bg-slate-100;
+}
+.progress-fill {
+  @apply h-full rounded-full bg-emerald-500 transition-all duration-300;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #d4d4d8 !important;
+    break-inside: avoid;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+}
