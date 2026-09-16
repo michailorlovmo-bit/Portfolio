@@ -22,8 +22,8 @@ export default async function NavBar() {
             <Image
               src="/logo.jpg"
               alt=""
-              width={40}
-              height={40}
+              width={56}
+              height={56}
               className="rounded-md shadow-sm ring-1 ring-slate-900/5"
             />
             <span className="text-lg">{t.app.name}</span>
