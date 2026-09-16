@@ -60,14 +60,17 @@ go find it.
   (Settings → Checklists — each item can be edited in place, not just
   added/removed, so fixing a typo doesn't bump it to the end of the list),
   toggles Telekom clearance, and can override any AI verdict.
-- **Staff**: sees only the phase tasks assigned to them, uploads files, adds
-  structured test readings (e.g. OTDR/power-meter values — free-form
-  label/value/unit so it fits any instrument), and submits with notes. Each
-  phase task page has a collapsible "Building spec" section (BEP/BMO/cables/
-  floor boxes) so a field tech can double-check the spec without leaving the
-  page and losing an in-progress submission. On submit, Gemini checks the
-  submission against that phase's checklist and the building's spec, and
-  returns a verdict per checklist item plus overall feedback.
+- **Staff**: sees only the phase tasks assigned to them, uploads files (and
+  can remove a wrongly-uploaded one before or after submitting — blocked
+  only once the phase is Done, since that's an approved record at that
+  point, not a mistake to undo), adds structured test readings (e.g.
+  OTDR/power-meter values — free-form label/value/unit so it fits any
+  instrument), and submits with notes. Each phase task page has a
+  collapsible "Building spec" section (BEP/BMO/cables/floor boxes) so a
+  field tech can double-check the spec without leaving the page and losing
+  an in-progress submission. On submit, Gemini checks the submission
+  against that phase's checklist and the building's spec, and returns a
+  verdict per checklist item plus overall feedback.
 
 ## Buildings list & notifications
 

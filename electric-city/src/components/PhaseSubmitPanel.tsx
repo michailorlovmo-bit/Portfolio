@@ -38,6 +38,7 @@ export default function PhaseSubmitPanel({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState(existingFiles);
+  const [removingId, setRemovingId] = useState<string | null>(null);
 
   async function handleUpload() {
     const selected = fileInputRef.current?.files;
@@ -65,6 +66,22 @@ export default function PhaseSubmitPanel({
 
     if (fileInputRef.current) fileInputRef.current.value = "";
     setUploading(false);
+    router.refresh();
+  }
+
+  async function removeFile(fileId: string) {
+    setRemovingId(fileId);
+    setError(null);
+    const res = await fetch(`/api/phase-tasks/${phaseTaskId}/files/${fileId}`, {
+      method: "DELETE",
+    });
+    setRemovingId(null);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setError(body.error || t.submitPanel.removeFailed);
+      return;
+    }
+    setFiles((prev) => prev.filter((f) => f.id !== fileId));
     router.refresh();
   }
 
@@ -122,7 +139,17 @@ export default function PhaseSubmitPanel({
         {files.length > 0 && (
           <ul className="mb-2 space-y-1 text-sm text-slate-600">
             {files.map((f) => (
-              <li key={f.id}>{f.filename}</li>
+              <li key={f.id} className="flex items-center justify-between gap-2">
+                <span className="truncate">{f.filename}</span>
+                <button
+                  type="button"
+                  className="flex-shrink-0 text-xs text-rose-600 hover:underline disabled:opacity-50"
+                  disabled={removingId === f.id}
+                  onClick={() => removeFile(f.id)}
+                >
+                  {removingId === f.id ? t.submitPanel.removing : t.common.remove}
+                </button>
+              </li>
             ))}
           </ul>
         )}
