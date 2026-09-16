@@ -9,6 +9,7 @@ interface StaffOption {
   id: string;
   name: string;
   category: string | null;
+  subcontractorName: string | null;
 }
 
 export default function AssignPhaseForm({
@@ -61,6 +62,7 @@ export default function AssignPhaseForm({
               {matching.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
+                  {s.subcontractorName ? ` (${s.subcontractorName})` : ""}
                 </option>
               ))}
             </optgroup>
@@ -70,6 +72,7 @@ export default function AssignPhaseForm({
               {others.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
+                  {s.subcontractorName ? ` (${s.subcontractorName})` : ""}
                 </option>
               ))}
             </optgroup>

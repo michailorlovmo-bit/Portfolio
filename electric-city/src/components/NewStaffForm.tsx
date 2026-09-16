@@ -14,6 +14,7 @@ export default function NewStaffForm() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"STAFF" | "MANAGER">("STAFF");
   const [category, setCategory] = useState("");
+  const [subcontractorName, setSubcontractorName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +26,14 @@ export default function NewStaffForm() {
     const res = await fetch("/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, role, category: category || null }),
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        role,
+        category: category || null,
+        subcontractorName: subcontractorName.trim() || null,
+      }),
     });
 
     setLoading(false);
@@ -40,6 +48,7 @@ export default function NewStaffForm() {
     setPassword("");
     setRole("STAFF");
     setCategory("");
+    setSubcontractorName("");
     setOpen(false);
     router.refresh();
   }
@@ -108,6 +117,15 @@ export default function NewStaffForm() {
               ))}
             </select>
           </div>
+        </div>
+        <div>
+          <label className="label">{t.newStaffForm.subcontractor}</label>
+          <input
+            className="input"
+            placeholder={t.newStaffForm.subcontractorPlaceholder}
+            value={subcontractorName}
+            onChange={(e) => setSubcontractorName(e.target.value)}
+          />
         </div>
         {error && <p className="text-sm text-rose-600">{error}</p>}
         <div className="flex gap-2">

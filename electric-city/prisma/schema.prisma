@@ -15,21 +15,22 @@ datasource db {
 // PhaseReview.verdict: "APPROVED" | "NEEDS_REVISION" | "FLAGGED"
 
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  passwordHash String
-  role         String   @default("STAFF")
-  category     String? // one of the CATEGORIES keys in src/lib/categories.ts; null = unspecialized/manager
-  active       Boolean  @default(true)
-  canViewStats Boolean  @default(false) // company-wide statistics page access; granted per-account by an existing holder
-  createdAt    DateTime @default(now())
+  id                String   @id @default(cuid())
+  name              String
+  email             String   @unique
+  passwordHash      String
+  role              String   @default("STAFF")
+  category          String? // one of the CATEGORIES keys in src/lib/categories.ts; null = unspecialized/manager
+  subcontractorName String? // free-form company name; null = in-house staff. Lets outside crews be assigned phases like anyone else while staying identifiable for filtering/statistics.
+  active            Boolean  @default(true)
+  canViewStats      Boolean  @default(false) // company-wide statistics page access; granted per-account by an existing holder
+  createdAt         DateTime @default(now())
 
-  buildingsCreated  Building[]   @relation("BuildingsCreated")
-  telekomApprovals  Building[]   @relation("TelekomApprovals")
-  phaseTasksAssigned PhaseTask[] @relation("PhaseTasksAssigned")
-  uploadedFiles     PhaseFile[]
-  notifications     Notification[]
+  buildingsCreated   Building[]     @relation("BuildingsCreated")
+  telekomApprovals   Building[]     @relation("TelekomApprovals")
+  phaseTasksAssigned PhaseTask[]    @relation("PhaseTasksAssigned")
+  uploadedFiles      PhaseFile[]
+  notifications      Notification[]
 }
 
 model Notification {
@@ -118,7 +119,7 @@ model PhaseTask {
 
   category   String
   orderIndex Int
-  status     String   @default("LOCKED")
+  status     String @default("LOCKED")
 
   assignedToId String?
   assignedTo   User?   @relation("PhaseTasksAssigned", fields: [assignedToId], references: [id])

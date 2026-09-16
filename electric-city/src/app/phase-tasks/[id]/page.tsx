@@ -56,7 +56,7 @@ export default async function PhaseTaskDetailPage({
   const staff = isManager
     ? await prisma.user.findMany({
         where: { role: "STAFF", active: true },
-        select: { id: true, name: true, category: true },
+        select: { id: true, name: true, category: true, subcontractorName: true },
         orderBy: { name: "asc" },
       })
     : [];

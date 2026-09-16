@@ -37,13 +37,18 @@ go find it.
 - **Manager**: creates buildings (with BEP/BMO/cable entries and per-floor
   box counts) and can edit that spec later from the building page, creates
   and deactivates staff accounts (optionally tagged with a category, so the
-  assignment dropdown suggests the right people first — deactivating someone
-  unassigns any of their phases that were still open, so that work
-  resurfaces on the dashboard's "Needs assignment" list instead of sitting
-  stuck on an account nobody can sign into anymore; their history is kept),
-  assigns one staff member and an optional due date per phase, maintains the
-  reusable checklist template for each category (Settings → Checklists),
-  toggles Telekom clearance, and can override any AI verdict.
+  assignment dropdown suggests the right people first, and optionally with a
+  subcontractor company name — leave it blank for in-house staff; a
+  subcontractor account works exactly like an in-house one, it's just
+  labeled with its company everywhere staff show up (Staff page, the assign
+  dropdown, statistics) so you can tell who's who and, eventually, who to
+  bill — deactivating someone unassigns any of their phases that were still
+  open, so that work resurfaces on the dashboard's "Needs assignment" list
+  instead of sitting stuck on an account nobody can sign into anymore; their
+  history is kept), assigns one staff member and an optional due date per
+  phase, maintains the reusable checklist template for each category
+  (Settings → Checklists), toggles Telekom clearance, and can override any
+  AI verdict.
 - **Staff**: sees only the phase tasks assigned to them, uploads files, adds
   structured test readings (e.g. OTDR/power-meter values — free-form
   label/value/unit so it fits any instrument), and submits with notes. Each
@@ -107,8 +112,9 @@ automatically when printing.
 ## Statistics (restricted)
 
 A **Statistics** page (nav link only appears if you have access) shows
-company-wide numbers: buildings by status, and a breakdown by category and
-by person of how many phases are done, about to complete (submitted,
+company-wide numbers: buildings by status, and a breakdown by category, by
+subcontractor (in-house vs. each named subcontractor company), and by
+person of how many phases are done, about to complete (submitted,
 awaiting/pending final verdict), in progress, needing attention, or
 overdue. It's meant for the people overseeing the whole operation, not
 every manager.
@@ -264,13 +270,3 @@ resubmit. Managers can always override via the phase task page.
   rather than repeated inline utility soup, so the look stays consistent
   as pages get added. The UI font is Inter (self-hosted via `next/font`,
   Greek subset included).
-
-## Roadmap
-
-- **Sub-contractor sub-category.** Staff accounts are tagged with one of the
-  5 pipeline categories, but there's no way yet to say which company a
-  worker belongs to — everyone's treated as in-house. Next: add a
-  sub-contractor sub-category so outside crews can be assigned phases and
-  use the app the same way in-house staff do, while still being
-  identifiable as a specific subcontractor (for filtering, statistics, and
-  knowing who to bill/coordinate with).

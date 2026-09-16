@@ -46,7 +46,11 @@ export default async function StatisticsPage() {
       include: { phaseTasks: { select: { status: true } } },
     }),
     prisma.phaseTask.findMany({
-      include: { assignedTo: { select: { id: true, name: true, role: true, category: true } } },
+      include: {
+        assignedTo: {
+          select: { id: true, name: true, role: true, category: true, subcontractorName: true },
+        },
+      },
     }),
   ]);
 
@@ -63,8 +67,11 @@ export default async function StatisticsPage() {
   const byCategory = new Map<string, Bucket>(CATEGORIES.map((c) => [c.key, emptyBucket()]));
   const byPerson = new Map<
     string,
-    { name: string; role: string; category: string | null; bucket: Bucket }
+    { name: string; role: string; category: string | null; subcontractorName: string | null; bucket: Bucket }
   >();
+  // "" is the in-house bucket (subcontractorName === null); every other key
+  // is a subcontractor company name.
+  const bySubcontractor = new Map<string, Bucket>([["", emptyBucket()]]);
 
   for (const task of phaseTasks) {
     const isOverdue = !!task.dueDate && task.dueDate < now && task.status !== "DONE" && task.status !== "LOCKED";
@@ -78,14 +85,22 @@ export default async function StatisticsPage() {
           name: task.assignedTo.name,
           role: task.assignedTo.role,
           category: task.assignedTo.category,
+          subcontractorName: task.assignedTo.subcontractorName,
           bucket: emptyBucket(),
         });
       }
       tally(byPerson.get(task.assignedTo.id)!.bucket, task.status, isOverdue);
+
+      const subKey = task.assignedTo.subcontractorName || "";
+      if (!bySubcontractor.has(subKey)) bySubcontractor.set(subKey, emptyBucket());
+      tally(bySubcontractor.get(subKey)!, task.status, isOverdue);
     }
   }
 
   const people = Array.from(byPerson.values()).sort((a, b) => b.bucket.total - a.bucket.total);
+  const subcontractors = Array.from(bySubcontractor.entries())
+    .map(([name, bucket]) => ({ name, bucket }))
+    .sort((a, b) => (a.name === "" ? -1 : b.name === "" ? 1 : b.bucket.total - a.bucket.total));
 
   const categoryCsvHeader = [
     t.statisticsPage.colCategory,
@@ -108,6 +123,7 @@ export default async function StatisticsPage() {
   const personCsvHeader = [
     t.statisticsPage.colPerson,
     t.statisticsPage.colCategory,
+    t.statisticsPage.colSubcontractor,
     t.statisticsPage.colAssigned,
     t.statisticsPage.colDone,
     t.statisticsPage.colAboutToComplete,
@@ -120,12 +136,37 @@ export default async function StatisticsPage() {
     ...people.map((p) => [
       p.name,
       p.category ? categoryDef(p.category).labelEl : "",
+      p.subcontractorName || t.statisticsPage.inHouse,
       p.bucket.total,
       p.bucket.done,
       p.bucket.aboutToComplete,
       p.bucket.inProgress,
       p.bucket.needsAttention,
       p.bucket.overdue,
+    ]),
+  ];
+
+  const subcontractorCsvHeader = [
+    t.statisticsPage.colSubcontractor,
+    t.statisticsPage.colTotalPhases,
+    t.statisticsPage.colDone,
+    t.statisticsPage.colAboutToComplete,
+    t.statisticsPage.colInProgress,
+    t.statisticsPage.colNeedsAttention,
+    t.statisticsPage.colLocked,
+    t.statisticsPage.colOverdue,
+  ];
+  const subcontractorCsvRows: (string | number)[][] = [
+    subcontractorCsvHeader,
+    ...subcontractors.map((s) => [
+      s.name || t.statisticsPage.inHouse,
+      s.bucket.total,
+      s.bucket.done,
+      s.bucket.aboutToComplete,
+      s.bucket.inProgress,
+      s.bucket.needsAttention,
+      s.bucket.locked,
+      s.bucket.overdue,
     ]),
   ];
 
@@ -187,6 +228,45 @@ export default async function StatisticsPage() {
 
       <div>
         <div className="mb-3 flex items-center justify-between">
+          <h2 className="section-title">{t.statisticsPage.bySubcontractor}</h2>
+          <ExportCsvButton rows={subcontractorCsvRows} filename="statistics-by-subcontractor.csv" />
+        </div>
+        <div className="card overflow-x-auto">
+          <table className="w-full min-w-[720px] text-sm">
+            <thead>
+              <tr className="border-b border-slate-100 text-left text-slate-500">
+                <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colSubcontractor}</th>
+                <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colTotalPhases}</th>
+                <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colDone}</th>
+                <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colAboutToComplete}</th>
+                <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colInProgress}</th>
+                <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colNeedsAttention}</th>
+                <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colLocked}</th>
+                <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colOverdue}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {subcontractors.map((s) => (
+                <tr key={s.name || "__inhouse__"} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60">
+                  <td className="px-4 py-2.5 font-medium text-slate-900">
+                    {s.name || t.statisticsPage.inHouse}
+                  </td>
+                  <td className="px-4 py-2.5">{s.bucket.total}</td>
+                  <td className="px-4 py-2.5 text-emerald-700">{s.bucket.done}</td>
+                  <td className="px-4 py-2.5 text-amber-700">{s.bucket.aboutToComplete}</td>
+                  <td className="px-4 py-2.5 text-slate-600">{s.bucket.inProgress}</td>
+                  <td className="px-4 py-2.5 text-rose-700">{s.bucket.needsAttention}</td>
+                  <td className="px-4 py-2.5 text-slate-400">{s.bucket.locked}</td>
+                  <td className="px-4 py-2.5 text-rose-700">{s.bucket.overdue}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div className="mb-3 flex items-center justify-between">
           <h2 className="section-title">{t.statisticsPage.byPerson}</h2>
           {people.length > 0 && (
             <ExportCsvButton rows={personCsvRows} filename="statistics-by-person.csv" />
@@ -203,6 +283,7 @@ export default async function StatisticsPage() {
                 <tr className="border-b border-slate-100 text-left text-slate-500">
                   <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colPerson}</th>
                   <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colCategory}</th>
+                  <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colSubcontractor}</th>
                   <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colAssigned}</th>
                   <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colDone}</th>
                   <th className="px-4 py-2.5 font-medium">{t.statisticsPage.colAboutToComplete}</th>
@@ -222,6 +303,9 @@ export default async function StatisticsPage() {
                     </td>
                     <td className="px-4 py-2.5 text-slate-600">
                       {p.category ? categoryDef(p.category).labelEl : "—"}
+                    </td>
+                    <td className="px-4 py-2.5 text-slate-600">
+                      {p.subcontractorName || t.statisticsPage.inHouse}
                     </td>
                     <td className="px-4 py-2.5">{p.bucket.total}</td>
                     <td className="px-4 py-2.5 text-emerald-700">{p.bucket.done}</td>

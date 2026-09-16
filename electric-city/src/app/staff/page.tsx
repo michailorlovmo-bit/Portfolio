@@ -55,6 +55,11 @@ export default async function StaffPage() {
               {u.category && (
                 <span className="badge badge-neutral">{categoryDef(u.category).labelEl}</span>
               )}
+              {u.subcontractorName && (
+                <span className="badge badge-revision">
+                  {tr(t.staffPage.subcontractorBadge, { name: u.subcontractorName })}
+                </span>
+              )}
               <span>{tr(t.staffPage.joined, { date: formatDate(u.createdAt, locale) })}</span>
               {u.id !== session.user.id && (
                 <>

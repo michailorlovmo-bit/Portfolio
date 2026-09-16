@@ -21,6 +21,7 @@ export async function GET() {
       email: true,
       role: true,
       category: true,
+      subcontractorName: true,
       active: true,
       createdAt: true,
     },
@@ -36,6 +37,7 @@ const createUserSchema = z.object({
   password: z.string().min(8).max(200),
   role: z.enum(["MANAGER", "STAFF"]).default("STAFF"),
   category: z.enum(CATEGORIES.map((c) => c.key) as [string, ...string[]]).nullable().optional(),
+  subcontractorName: z.string().trim().min(1).max(200).nullable().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -50,7 +52,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
-  const { name, email, password, role, category } = parsed.data;
+  const { name, email, password, role, category, subcontractorName } = parsed.data;
 
   const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   if (existing) {
@@ -60,8 +62,23 @@ export async function POST(req: NextRequest) {
 
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
-    data: { name, email: email.toLowerCase(), passwordHash, role, category: category || null },
-    select: { id: true, name: true, email: true, role: true, category: true, createdAt: true },
+    data: {
+      name,
+      email: email.toLowerCase(),
+      passwordHash,
+      role,
+      category: category || null,
+      subcontractorName: subcontractorName || null,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      category: true,
+      subcontractorName: true,
+      createdAt: true,
+    },
   });
 
   return NextResponse.json({ user }, { status: 201 });
