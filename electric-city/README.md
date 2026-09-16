@@ -45,8 +45,11 @@ go find it.
   labeled with its company everywhere staff show up (Staff page, the assign
   dropdown, statistics, the buildings list, every "Assigned to" line on the
   building page, the phase task page, and the printable report) so you can
-  tell who's who and, eventually, who to bill — deactivating someone
-  unassigns any of their phases that were still
+  tell who's who and, eventually, who to bill; "Edit" next to anyone but
+  yourself lets you fix their name, category, or subcontractor after the
+  fact (a typo, a re-assignment to a different team) without deactivating
+  and re-creating the account — deactivating someone unassigns any of their
+  phases that were still
   open, so that work resurfaces on the dashboard's "Needs assignment" list
   instead of sitting stuck on an account nobody can sign into anymore; their
   history is kept), assigns one staff member and an optional due date per

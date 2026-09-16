@@ -44,6 +44,7 @@ const en = {
     checklistItemRemoved: "Checklist item removed",
     assignmentSaved: "Assignment saved",
     statusUpdated: "Status updated",
+    staffUpdated: "Staff details updated",
     actionFailed: "Something went wrong. Try again.",
   },
   auth: {
@@ -199,6 +200,7 @@ const en = {
     statisticsBadge: "Statistics",
     joined: "Joined {date}",
     subcontractorBadge: "Subcontractor: {name}",
+    edit: "Edit",
     deactivate: "Deactivate",
     reactivate: "Reactivate",
     grantStats: "Grant statistics access",
@@ -331,6 +333,7 @@ const el: Dictionary = {
     checklistItemRemoved: "Αφαιρέθηκε στοιχείο λίστας ελέγχου",
     assignmentSaved: "Η ανάθεση αποθηκεύτηκε",
     statusUpdated: "Η κατάσταση ενημερώθηκε",
+    staffUpdated: "Τα στοιχεία προσωπικού ενημερώθηκαν",
     actionFailed: "Κάτι πήγε στραβά. Δοκιμάστε ξανά.",
   },
   auth: {
@@ -486,6 +489,7 @@ const el: Dictionary = {
     statisticsBadge: "Στατιστικά",
     joined: "Εγγραφή: {date}",
     subcontractorBadge: "Υπεργολάβος: {name}",
+    edit: "Επεξεργασία",
     deactivate: "Απενεργοποίηση",
     reactivate: "Επανενεργοποίηση",
     grantStats: "Παραχώρηση πρόσβασης στατιστικών",

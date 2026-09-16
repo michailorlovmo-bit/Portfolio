@@ -3,10 +3,14 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { CATEGORIES } from "@/lib/categories";
 
 const updateSchema = z.object({
   active: z.boolean().optional(),
   canViewStats: z.boolean().optional(),
+  name: z.string().trim().min(1).max(200).optional(),
+  category: z.enum(CATEGORIES.map((c) => c.key) as [string, ...string[]]).nullable().optional(),
+  subcontractorName: z.string().trim().min(1).max(200).nullable().optional(),
 });
 
 export async function PATCH(
@@ -31,7 +35,7 @@ export async function PATCH(
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const data: Record<string, boolean> = {};
+  const data: Record<string, unknown> = {};
 
   if (parsed.data.active !== undefined) {
     data.active = parsed.data.active;
@@ -47,6 +51,18 @@ export async function PATCH(
       );
     }
     data.canViewStats = parsed.data.canViewStats;
+  }
+
+  if (parsed.data.name !== undefined) {
+    data.name = parsed.data.name;
+  }
+
+  if (parsed.data.category !== undefined) {
+    data.category = parsed.data.category;
+  }
+
+  if (parsed.data.subcontractorName !== undefined) {
+    data.subcontractorName = parsed.data.subcontractorName;
   }
 
   // Deactivating someone doesn't touch their history, but it must not leave
@@ -65,6 +81,7 @@ export async function PATCH(
         email: true,
         role: true,
         category: true,
+        subcontractorName: true,
         active: true,
         canViewStats: true,
         createdAt: true,

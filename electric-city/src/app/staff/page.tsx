@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import NewStaffForm from "@/components/NewStaffForm";
+import EditStaffForm from "@/components/EditStaffForm";
 import StaffActiveToggle from "@/components/StaffActiveToggle";
 import StatsAccessToggle from "@/components/StatsAccessToggle";
 import { formatDate } from "@/lib/format";
@@ -35,53 +36,67 @@ export default async function StaffPage() {
             </svg>
             {t.staffPage.downloadBackup}
           </a>
-          <NewStaffForm existingSubcontractors={existingSubcontractors} />
+          <NewStaffForm />
         </div>
       </div>
+
+      <datalist id="subcontractor-options">
+        {existingSubcontractors.map((name) => (
+          <option key={name} value={name} />
+        ))}
+      </datalist>
 
       <div className="card divide-y divide-slate-100">
         {users.map((u) => (
           <div
             key={u.id}
-            className={`flex flex-wrap items-center justify-between gap-2 px-5 py-3 transition-opacity ${
-              u.active ? "" : "opacity-60"
-            }`}
+            className={`px-5 py-3 transition-opacity ${u.active ? "" : "opacity-60"}`}
           >
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
-                {u.name.charAt(0).toUpperCase()}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
+                  {u.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p className="font-medium text-slate-900">
+                    {u.name}
+                    {!u.active && <span className="ml-2 badge badge-locked">{t.staffPage.deactivated}</span>}
+                    {u.canViewStats && (
+                      <span className="ml-2 badge badge-neutral">{t.staffPage.statisticsBadge}</span>
+                    )}
+                  </p>
+                  <p className="text-sm text-slate-500">{u.email}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-slate-900">
-                  {u.name}
-                  {!u.active && <span className="ml-2 badge badge-locked">{t.staffPage.deactivated}</span>}
-                  {u.canViewStats && (
-                    <span className="ml-2 badge badge-neutral">{t.staffPage.statisticsBadge}</span>
-                  )}
-                </p>
-                <p className="text-sm text-slate-500">{u.email}</p>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
+                <span className="badge badge-neutral">{t.role[u.role as keyof typeof t.role]}</span>
+                {u.category && (
+                  <span className="badge badge-neutral">{categoryDef(u.category).labelEl}</span>
+                )}
+                {u.subcontractorName && (
+                  <span className="badge badge-revision">
+                    {tr(t.staffPage.subcontractorBadge, { name: u.subcontractorName })}
+                  </span>
+                )}
+                <span>{tr(t.staffPage.joined, { date: formatDate(u.createdAt, locale) })}</span>
+                {u.id !== session.user.id && (
+                  <>
+                    <StaffActiveToggle userId={u.id} active={u.active} />
+                    {session.user.canViewStats && (
+                      <StatsAccessToggle userId={u.id} canViewStats={u.canViewStats} />
+                    )}
+                  </>
+                )}
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
-              <span className="badge badge-neutral">{t.role[u.role as keyof typeof t.role]}</span>
-              {u.category && (
-                <span className="badge badge-neutral">{categoryDef(u.category).labelEl}</span>
-              )}
-              {u.subcontractorName && (
-                <span className="badge badge-revision">
-                  {tr(t.staffPage.subcontractorBadge, { name: u.subcontractorName })}
-                </span>
-              )}
-              <span>{tr(t.staffPage.joined, { date: formatDate(u.createdAt, locale) })}</span>
-              {u.id !== session.user.id && (
-                <>
-                  <StaffActiveToggle userId={u.id} active={u.active} />
-                  {session.user.canViewStats && (
-                    <StatsAccessToggle userId={u.id} canViewStats={u.canViewStats} />
-                  )}
-                </>
-              )}
-            </div>
+            {u.id !== session.user.id && (
+              <EditStaffForm
+                userId={u.id}
+                initialName={u.name}
+                initialCategory={u.category}
+                initialSubcontractorName={u.subcontractorName}
+              />
+            )}
           </div>
         ))}
       </div>

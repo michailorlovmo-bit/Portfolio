@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { CATEGORIES } from "@/lib/categories";
 import { useI18n } from "@/lib/i18n/client";
 
-export default function NewStaffForm({ existingSubcontractors }: { existingSubcontractors: string[] }) {
+export default function NewStaffForm() {
   const router = useRouter();
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -154,11 +154,6 @@ export default function NewStaffForm({ existingSubcontractors }: { existingSubco
             value={subcontractorName}
             onChange={(e) => setSubcontractorName(e.target.value)}
           />
-          <datalist id="subcontractor-options">
-            {existingSubcontractors.map((name) => (
-              <option key={name} value={name} />
-            ))}
-          </datalist>
         </div>
         {error && <p className="text-sm text-rose-600">{error}</p>}
         <div className="flex gap-2">
