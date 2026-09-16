@@ -24,10 +24,15 @@ export default function EditStaffForm({
   const [name, setName] = useState(initialName);
   const [category, setCategory] = useState(initialCategory || "");
   const [subcontractorName, setSubcontractorName] = useState(initialSubcontractorName || "");
+  const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSave() {
+    if (newPassword && newPassword.length < 8) {
+      setError(t.staffPage.passwordTooShort);
+      return;
+    }
     setError(null);
     setLoading(true);
     const res = await fetch(`/api/users/${userId}`, {
@@ -37,6 +42,7 @@ export default function EditStaffForm({
         name: name.trim(),
         category: category || null,
         subcontractorName: subcontractorName.trim() || null,
+        ...(newPassword ? { newPassword } : {}),
       }),
     });
     setLoading(false);
@@ -45,7 +51,8 @@ export default function EditStaffForm({
       setError(typeof body.error === "string" ? body.error : t.toast.actionFailed);
       return;
     }
-    showToast(t.toast.staffUpdated);
+    showToast(newPassword ? t.staffPage.passwordReset : t.toast.staffUpdated);
+    setNewPassword("");
     setOpen(false);
     router.refresh();
   }
@@ -54,6 +61,7 @@ export default function EditStaffForm({
     setName(initialName);
     setCategory(initialCategory || "");
     setSubcontractorName(initialSubcontractorName || "");
+    setNewPassword("");
     setError(null);
     setOpen(false);
   }
@@ -98,6 +106,16 @@ export default function EditStaffForm({
           placeholder={t.newStaffForm.subcontractorPlaceholder}
           value={subcontractorName}
           onChange={(e) => setSubcontractorName(e.target.value)}
+        />
+      </div>
+      <div>
+        <input
+          className="input max-w-xs"
+          type="text"
+          aria-label={t.staffPage.newPasswordLabel}
+          placeholder={t.staffPage.newPasswordPlaceholder}
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
         />
       </div>
       {error && <p className="text-sm text-rose-600">{error}</p>}

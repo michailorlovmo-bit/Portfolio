@@ -48,8 +48,11 @@ go find it.
   tell who's who and, eventually, who to bill; "Edit" next to anyone but
   yourself lets you fix their name, category, or subcontractor after the
   fact (a typo, a re-assignment to a different team) without deactivating
-  and re-creating the account — deactivating someone unassigns any of their
-  phases that were still
+  and re-creating the account, and can set someone a new password from that
+  same form (leave it blank to keep their current one) — the app has no
+  email/SMTP setup, so this manager-assisted reset is the only recovery
+  path if a technician forgets their password — deactivating someone
+  unassigns any of their phases that were still
   open, so that work resurfaces on the dashboard's "Needs assignment" list
   instead of sitting stuck on an account nobody can sign into anymore; their
   history is kept), assigns one staff member and an optional due date per

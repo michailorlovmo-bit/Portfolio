@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -11,6 +12,7 @@ const updateSchema = z.object({
   name: z.string().trim().min(1).max(200).optional(),
   category: z.enum(CATEGORIES.map((c) => c.key) as [string, ...string[]]).nullable().optional(),
   subcontractorName: z.string().trim().min(1).max(200).nullable().optional(),
+  newPassword: z.string().min(8).max(200).optional(),
 });
 
 export async function PATCH(
@@ -63,6 +65,14 @@ export async function PATCH(
 
   if (parsed.data.subcontractorName !== undefined) {
     data.subcontractorName = parsed.data.subcontractorName;
+  }
+
+  if (parsed.data.newPassword !== undefined) {
+    // A manager-set reset, not a self-service "forgot password" flow — this
+    // app has no email/SMTP setup, so this is the only recovery path if
+    // someone forgets their password. The technician should change it again
+    // themselves from the account page once they're back in.
+    data.passwordHash = await bcrypt.hash(parsed.data.newPassword, 10);
   }
 
   // Deactivating someone doesn't touch their history, but it must not leave
