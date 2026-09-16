@@ -129,6 +129,18 @@ admin account starts with it. Grant it to the Telekom-projects manager and
 whoever else needs it — there's no hardcoded limit on how many people can
 have it, that's entirely up to who you grant it to.
 
+## Backups
+
+"Download backup" on the Staff page (manager only) downloads a single JSON
+file with every building's spec and full phase history (checklist results,
+AI review history, test readings, and a record of what files were
+uploaded), every staff/manager account (except password hashes), and the
+checklist templates — everything except the uploaded files' actual bytes,
+which stay on disk under `uploads/`. It's there so getting your data out
+doesn't require server or Docker-volume access, just a browser: useful
+before a risky change, or just for peace of mind on top of whatever backs
+up the server itself.
+
 ## Language (English / Greek)
 
 The EN / ΕΛ toggle in the header (and on the login page) switches the whole

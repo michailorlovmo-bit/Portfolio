@@ -28,7 +28,15 @@ export default async function StaffPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="page-title">{t.staffPage.title}</h1>
-        <NewStaffForm existingSubcontractors={existingSubcontractors} />
+        <div className="flex flex-wrap gap-2">
+          <a href="/api/backup" className="btn-secondary">
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />
+            </svg>
+            {t.staffPage.downloadBackup}
+          </a>
+          <NewStaffForm existingSubcontractors={existingSubcontractors} />
+        </div>
       </div>
 
       <div className="card divide-y divide-slate-100">

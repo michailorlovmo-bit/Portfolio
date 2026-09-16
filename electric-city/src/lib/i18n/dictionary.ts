@@ -192,6 +192,7 @@ const en = {
   staffPage: {
     title: "Staff accounts",
     addAccount: "Add account",
+    downloadBackup: "Download backup",
     deactivated: "Deactivated",
     statisticsBadge: "Statistics",
     joined: "Joined {date}",
@@ -476,6 +477,7 @@ const el: Dictionary = {
   staffPage: {
     title: "Λογαριασμοί προσωπικού",
     addAccount: "Προσθήκη λογαριασμού",
+    downloadBackup: "Λήψη αντιγράφου ασφαλείας",
     deactivated: "Απενεργοποιημένο",
     statisticsBadge: "Στατιστικά",
     joined: "Εγγραφή: {date}",
