@@ -310,7 +310,10 @@ through server logs to confirm it took.
 If a mirror upload fails for any reason (network blip, revoked share,
 wrong folder id), it's logged server-side and silently skipped — it never
 blocks or fails the actual upload, since the local copy is always what the
-AI review and the rest of the app work from.
+AI review and the rest of the app work from. Removing a wrongly-uploaded
+file (see below) removes its Drive mirror too, so undoing a mistake
+actually undoes it everywhere instead of leaving the wrong photo sitting
+in the employer's Drive forever.
 
 **This integration hasn't been exercised against a real Google account** —
 there were no credentials available to test with in this environment. What

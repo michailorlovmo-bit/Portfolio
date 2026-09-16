@@ -5,6 +5,7 @@ import path from "path";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PREVIEWABLE_MIME_TYPES } from "@/lib/storage";
+import { deleteFileFromDrive } from "@/lib/googleDrive";
 
 export async function GET(
   _req: NextRequest,
@@ -88,6 +89,10 @@ export async function DELETE(
 
   const absolutePath = path.join(process.cwd(), file.storedPath);
   await fs.unlink(absolutePath).catch(() => null);
+
+  if (file.driveFileId) {
+    await deleteFileFromDrive(file.driveFileId);
+  }
 
   return NextResponse.json({ ok: true });
 }

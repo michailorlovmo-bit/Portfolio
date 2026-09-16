@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { isDriveConfigured, buildingFolderName, driveFileName } from "./googleDrive";
+import { isDriveConfigured, buildingFolderName, driveFileName, deleteFileFromDrive } from "./googleDrive";
 
 describe("isDriveConfigured", () => {
   const originalJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
@@ -60,5 +60,14 @@ describe("driveFileName", () => {
 
   it("sanitizes the filename the same way folder names are sanitized", () => {
     expect(driveFileName("EARTHWORKS", "weird/name.jpg")).toBe("Earthworks - weird-name.jpg");
+  });
+});
+
+describe("deleteFileFromDrive", () => {
+  it("resolves without throwing when Drive isn't configured, instead of erroring the local delete", async () => {
+    // No GOOGLE_SERVICE_ACCOUNT_JSON in this test environment — this must
+    // stay a true no-op, since removing a file locally should never fail
+    // just because the Drive mirror is unreachable or was never set up.
+    await expect(deleteFileFromDrive("some-drive-file-id")).resolves.toBeUndefined();
   });
 });

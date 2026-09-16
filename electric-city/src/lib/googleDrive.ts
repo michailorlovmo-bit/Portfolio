@@ -141,3 +141,19 @@ export async function uploadFileToDrive(params: {
     return null;
   }
 }
+
+// Best-effort cleanup to match: removing a phase file locally should also
+// remove its Drive mirror, or "remove a mistaken upload" would leave the
+// mistake sitting in the employer's Drive forever. Never throws — a failed
+// cleanup here shouldn't block the local removal the user actually asked
+// for; it's logged so it can be cleaned up by hand if it ever happens.
+export async function deleteFileFromDrive(driveFileId: string): Promise<void> {
+  const drive = getDriveClient();
+  if (!drive) return;
+
+  try {
+    await drive.files.delete({ fileId: driveFileId });
+  } catch (e) {
+    console.error(`Failed to remove Drive file ${driveFileId} (local copy was still removed):`, e);
+  }
+}
