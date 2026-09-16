@@ -8,16 +8,16 @@ next phase unlocks.
 
 ## The pipeline
 
-1. **Αυτοψιες** (Site Survey)
+1. **Αυτοψίες** (Site Survey)
 2. *— manual gate: waiting for Telekom to hand the building back —*
-3. **Χωματουργοι** (Earthworks)
-4. **Κατασκευαστες** (Construction — BEP/BMO/floor boxes/cables installed)
-5. **Εμφυσητες** (Fiber Blowing)
-6. **Κολλητες** (Splicing — closes the building)
+3. **Χωματουργοί** (Earthworks)
+4. **Κατασκευαστές** (Construction — BEP/BMO/floor boxes/cables installed)
+5. **Εμφυσητές** (Fiber Blowing)
+6. **Κολλητές** (Splicing — closes the building)
 
-Creating a building auto-creates all 5 phase tasks. Only Αυτοψιες starts
+Creating a building auto-creates all 5 phase tasks. Only Αυτοψίες starts
 unlocked; each later phase unlocks once the previous one is marked Done —
-and Χωματουργοι additionally needs a manager to mark the building as
+and Χωματουργοί additionally needs a manager to mark the building as
 "Telekom cleared" first.
 
 ## Dashboard (home page)
@@ -38,7 +38,9 @@ go find it.
   box counts) and can edit that spec later from the building page, creates
   and deactivates staff accounts (optionally tagged with a category, so the
   assignment dropdown suggests the right people first, and optionally with a
-  subcontractor company name — leave it blank for in-house staff; a
+  subcontractor company name (autocompleted from names already in use, so
+  "Acme Fiber" and "acme fiber" don't silently become two different
+  companies in the stats) — leave it blank for in-house staff; a
   subcontractor account works exactly like an in-house one, it's just
   labeled with its company everywhere staff show up (Staff page, the assign
   dropdown, statistics) so you can tell who's who and, eventually, who to
@@ -58,7 +60,7 @@ go find it.
   submission against that phase's checklist and the building's spec, and
   returns a verdict per checklist item plus overall feedback.
 
-## Dashboard & notifications
+## Buildings list & notifications
 
 The Buildings list has a search box (name/address), a per-building progress
 bar (phases done / 5), CSV export of whatever's currently filtered, and
@@ -100,7 +102,7 @@ see what happened and when without digging through each phase individually.
 building with the same spec (BEP/BMO/cable entries, floor boxes, address,
 floor count) named "`<original> (copy)`". It's meant for near-identical
 buildings on the same site — it does **not** copy phase progress, files, or
-reviews; the duplicate starts its own pipeline from Αυτοψιες like any new
+reviews; the duplicate starts its own pipeline from Αυτοψίες like any new
 building.
 
 **Print report** opens a `/buildings/[id]/report` page formatted for
@@ -175,6 +177,22 @@ Client Components use the `useI18n()` hook from `src/lib/i18n/client.tsx`.
      Gemini approves it (this is empty by default).
    - Go to **Staff** and create accounts for your teams.
    - Go to **Buildings** and create your first building.
+
+## Testing
+
+```bash
+npm test
+```
+
+Runs the Vitest unit suite (`src/lib/*.test.ts`) covering the pure logic
+that's easiest to get subtly wrong without noticing: the fixed pipeline
+categories, date/badge formatting, upload type/size validation (including
+that a mislabeled file is actually rejected, not just a well-labeled one
+accepted), and login lockout behavior. It doesn't touch a database, so it
+runs in under a second and needs no setup beyond `npm install`. Route
+handlers and React components aren't covered yet — this is a starting
+safety net for the logic most likely to regress silently, not full
+coverage.
 
 ## Deploying with Docker
 
@@ -270,3 +288,8 @@ resubmit. Managers can always override via the phase task page.
   rather than repeated inline utility soup, so the look stays consistent
   as pages get added. The UI font is Inter (self-hosted via `next/font`,
   Greek subset included).
+- `npm audit` currently reports one high-severity issue in `postcss`
+  (pulled in by Next.js's build tooling, not something this app's own code
+  uses at runtime). The only available fix is upgrading to Next.js 16, a
+  major version bump with its own migration work — worth doing deliberately
+  rather than as a drive-by dependency bump.

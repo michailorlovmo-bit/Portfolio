@@ -20,11 +20,15 @@ export default async function StaffPage() {
     orderBy: { createdAt: "asc" },
   });
 
+  const existingSubcontractors = Array.from(
+    new Set(users.map((u) => u.subcontractorName).filter((n): n is string => !!n))
+  ).sort();
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="page-title">{t.staffPage.title}</h1>
-        <NewStaffForm />
+        <NewStaffForm existingSubcontractors={existingSubcontractors} />
       </div>
 
       <div className="card divide-y divide-slate-100">

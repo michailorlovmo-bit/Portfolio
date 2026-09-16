@@ -20,7 +20,7 @@ async function main() {
   });
 
   console.log(`Created manager account: ${user.email} (password: ${password})`);
-  console.log("Log in and change this password by creating a new account if needed.");
+  console.log("Log in and change this password from the account page.");
 }
 
 main()
