@@ -261,6 +261,63 @@ depends on passes cleanly and the compose file's logic has been reviewed
 carefully, but please run through the steps above yourself and let me know
 if anything doesn't come up cleanly.
 
+## Google Drive backup (optional)
+
+Every uploaded phase file can also be mirrored into a Google Drive folder
+you control — organized as `<your folder>/<Building name (id)>/<Category> -
+<original filename>`, so anyone with access to that Drive folder can browse
+the same evidence the app has, without logging in. This is entirely
+optional and off by default: with nothing configured, uploads work exactly
+as they do today — the app never requires this to function, it's purely a
+bonus mirror on top of the local copy (which stays the source of truth
+either way).
+
+**One-time setup, when you're ready to turn it on:**
+
+1. In [Google Cloud Console](https://console.cloud.google.com/), create a
+   project (or reuse one), then enable the **Google Drive API** for it
+   (APIs & Services → Enable APIs and Services → search "Google Drive API").
+2. Create a **service account** (APIs & Services → Credentials → Create
+   Credentials → Service account). No roles/permissions need to be granted
+   on the project itself.
+3. Open the service account, go to the **Keys** tab, and create a new JSON
+   key — this downloads a `.json` file. Keep it private; it's a credential,
+   not something to commit or share.
+4. In the employer's actual Google Drive, create a folder for this (e.g.
+   "Electric City — Fiber Files"), then **share that folder** with the
+   service account's email address — it's the `client_email` field inside
+   the downloaded JSON, looks like
+   `something@your-project.iam.gserviceaccount.com` — with **Editor**
+   access. This is the step that puts the files in the employer's own
+   Drive: the service account can only ever see what's explicitly shared
+   with it.
+5. Open that folder in a browser and copy its id from the URL — the part
+   after `folders/`, e.g. `https://drive.google.com/drive/folders/`**`1a2B3c...`**.
+6. Set two environment variables (`.env` locally, or your host's/Docker's
+   env config in production):
+   - `GOOGLE_SERVICE_ACCOUNT_JSON` — paste the entire downloaded JSON file's
+     content as the value (as one line; most `.env` loaders handle a
+     JSON-with-quotes value fine inside single quotes).
+   - `GOOGLE_DRIVE_ROOT_FOLDER_ID` — the folder id from step 5.
+7. Restart the app. The next file someone uploads gets mirrored, and its
+   entry on the phase task page grows a "View in Google Drive" link.
+
+If a mirror upload fails for any reason (network blip, revoked share,
+wrong folder id), it's logged server-side and silently skipped — it never
+blocks or fails the actual upload, since the local copy is always what the
+AI review and the rest of the app work from.
+
+**This integration hasn't been exercised against a real Google account** —
+there were no credentials available to test with in this environment. What
+has been verified: the folder/filename-generation logic has a full unit
+test suite (`src/lib/googleDrive.test.ts`), and — critically — that the
+upload flow behaves exactly as it did before this feature existed when
+Drive isn't configured, confirmed live against the running app (a real
+upload still returns success in milliseconds once compiled, with the new
+Drive fields simply left `null`). The actual Drive API calls (folder
+creation, file upload) should be tried against a real account before
+relying on them.
+
 ## How the AI review works
 
 `src/lib/gemini.ts` sends Gemini the building's full spec (BEP/BMO/cable

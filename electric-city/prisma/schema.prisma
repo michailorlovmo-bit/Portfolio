@@ -169,6 +169,13 @@ model PhaseFile {
   mimeType     String
   size         Int
   createdAt    DateTime  @default(now())
+
+  // Set only if Google Drive backup is configured (GOOGLE_SERVICE_ACCOUNT_JSON
+  // + GOOGLE_DRIVE_ROOT_FOLDER_ID) and the upload succeeded; the file itself
+  // always lives locally regardless — this is a best-effort mirror, never
+  // the source of truth.
+  driveFileId   String?
+  driveViewLink String?
 }
 
 model PhaseReview {

@@ -161,6 +161,7 @@ const en = {
     due: "Due {date}",
     assignedTo: "Assigned to {name}",
     assignedToSubcontractor: "Assigned to {name} ({subcontractor})",
+    viewInDrive: "View in Google Drive",
   },
   submitPanel: {
     title: "Submit your work",
@@ -458,6 +459,7 @@ const el: Dictionary = {
     due: "Προθεσμία {date}",
     assignedTo: "Ανατέθηκε σε {name}",
     assignedToSubcontractor: "Ανατέθηκε σε {name} ({subcontractor})",
+    viewInDrive: "Προβολή στο Google Drive",
   },
   submitPanel: {
     title: "Υποβολή εργασίας",

@@ -247,6 +247,16 @@ export default async function PhaseTaskDetailPage({
                 <span className="ml-2 text-xs text-slate-400">
                   {(f.size / 1024).toFixed(0)} KB
                 </span>
+                {f.driveViewLink && (
+                  <a
+                    className="ml-2 text-xs text-brand-700 hover:underline"
+                    href={f.driveViewLink}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {t.phaseTask.viewInDrive}
+                  </a>
+                )}
               </li>
             ))}
           </ul>

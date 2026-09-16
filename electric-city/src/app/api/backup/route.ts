@@ -40,6 +40,7 @@ export async function GET() {
                 size: true,
                 createdAt: true,
                 uploadedBy: { select: { name: true, email: true } },
+                driveViewLink: true,
               },
             },
             reviews: {

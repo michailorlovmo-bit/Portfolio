@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { savePhaseFile, assertFileSizeOk, resolveMimeType, assertUploadAllowed } from "@/lib/storage";
+import { isDriveConfigured, uploadFileToDrive } from "@/lib/googleDrive";
 
 export async function POST(
   req: NextRequest,
@@ -13,7 +14,10 @@ export async function POST(
 
   const { id } = await params;
 
-  const task = await prisma.phaseTask.findUnique({ where: { id } });
+  const task = await prisma.phaseTask.findUnique({
+    where: { id },
+    include: { building: { select: { id: true, name: true } } },
+  });
   if (!task) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const isManager = session.user.role === "MANAGER";
@@ -46,7 +50,7 @@ export async function POST(
 
   const { storedPath, size } = await savePhaseFile(id, file.name, buffer);
 
-  const phaseFile = await prisma.phaseFile.create({
+  let phaseFile = await prisma.phaseFile.create({
     data: {
       phaseTaskId: id,
       uploadedById: session.user.id,
@@ -56,6 +60,26 @@ export async function POST(
       size,
     },
   });
+
+  // Best-effort mirror to Google Drive — the local copy on disk is always
+  // the source of truth, so a Drive failure (or it not being configured
+  // yet) never blocks or fails the upload itself.
+  if (isDriveConfigured()) {
+    const driveResult = await uploadFileToDrive({
+      buffer,
+      filename: file.name,
+      mimeType,
+      category: task.category,
+      buildingName: task.building.name,
+      buildingId: task.building.id,
+    });
+    if (driveResult) {
+      phaseFile = await prisma.phaseFile.update({
+        where: { id: phaseFile.id },
+        data: { driveFileId: driveResult.fileId, driveViewLink: driveResult.webViewLink },
+      });
+    }
+  }
 
   return NextResponse.json({ file: phaseFile }, { status: 201 });
 }
