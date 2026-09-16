@@ -214,22 +214,45 @@ export default async function BuildingReportPage({
                 </div>
               )}
 
-              {images.length > 0 && (
+              {task.files.length > 0 && (
                 <div>
                   <h4 className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">
                     {t.phaseTask.uploadedFiles}
                   </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {images.map((f) => (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        key={f.id}
-                        src={`/api/phase-tasks/${task.id}/files/${f.id}`}
-                        alt={f.filename}
-                        className="h-24 w-24 rounded-md border border-slate-200 object-cover"
-                      />
+                  {images.length > 0 && (
+                    <div className="mb-2 flex flex-wrap gap-2">
+                      {images.map((f) => (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          key={f.id}
+                          src={`/api/phase-tasks/${task.id}/files/${f.id}`}
+                          alt={f.filename}
+                          className="h-24 w-24 rounded-md border border-slate-200 object-cover"
+                        />
+                      ))}
+                    </div>
+                  )}
+                  {/* Every uploaded file is listed here, not just images —
+                      a PDF or text file submitted as evidence shouldn't be
+                      silently missing from what's meant to be the building's
+                      full compliance record. */}
+                  <ul className="space-y-0.5 text-sm text-slate-700">
+                    {task.files.map((f) => (
+                      <li key={f.id}>
+                        {f.filename}
+                        {f.driveViewLink && (
+                          <a
+                            className="ml-2 text-xs text-brand-700 hover:underline"
+                            href={f.driveViewLink}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {t.phaseTask.viewInDrive}
+                          </a>
+                        )}
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               )}
             </div>

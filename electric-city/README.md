@@ -119,9 +119,12 @@ building.
 
 **Print report** opens a `/buildings/[id]/report` page formatted for
 printing (or "Save as PDF" from the browser's print dialog): the full spec,
-and per-phase checklist results, AI review history, test readings, and
-uploaded file thumbnails. The nav bar and on-screen-only buttons are hidden
-automatically when printing.
+and per-phase checklist results, AI review history, test readings, image
+thumbnails, and a full list of every uploaded file's name — not just
+images, so a PDF or text file submitted as evidence isn't silently missing
+from what's meant to be the building's compliance record — each with a
+"View in Google Drive" link when one's available. The nav bar and
+on-screen-only buttons are hidden automatically when printing.
 
 ## Statistics (restricted)
 
