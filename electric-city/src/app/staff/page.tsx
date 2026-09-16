@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/format";
 import { categoryDef } from "@/lib/categories";
 import { getDictionary } from "@/lib/i18n/server";
 import { tr } from "@/lib/i18n/dictionary";
+import { isDriveConfigured } from "@/lib/googleDrive";
 
 export default async function StaffPage() {
   const session = await getServerSession(authOptions);
@@ -28,7 +29,17 @@ export default async function StaffPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="page-title">{t.staffPage.title}</h1>
+        <div>
+          <h1 className="page-title">{t.staffPage.title}</h1>
+          <p className="mt-1 text-xs text-slate-400">
+            {t.staffPage.driveStatusLabel}{" "}
+            <span
+              className={`badge ${isDriveConfigured() ? "badge-approved" : "badge-neutral"}`}
+            >
+              {isDriveConfigured() ? t.staffPage.driveConfigured : t.staffPage.driveNotConfigured}
+            </span>
+          </p>
+        </div>
         <div className="flex flex-wrap gap-2">
           <a href="/api/backup" className="btn-secondary">
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

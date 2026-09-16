@@ -302,6 +302,11 @@ either way).
 7. Restart the app. The next file someone uploads gets mirrored, and its
    entry on the phase task page grows a "View in Google Drive" link.
 
+A **"Google Drive backup: Connected / Not set up"** badge on the Staff page
+tells you at a glance whether the two env vars are actually in place —
+useful right after deploying with real credentials, without digging
+through server logs to confirm it took.
+
 If a mirror upload fails for any reason (network blip, revoked share,
 wrong folder id), it's logged server-side and silently skipped — it never
 blocks or fails the actual upload, since the local copy is always what the
