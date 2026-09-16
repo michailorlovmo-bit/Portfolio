@@ -55,14 +55,30 @@ export async function POST(
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  await prisma.phaseTask.update({
-    where: { id },
+  // If the AI review below fails, status gets reverted here rather than
+  // left stuck on SUBMITTED.
+  const statusBeforeSubmission = task.status;
+
+  // A plain read-then-write can't stop a genuine race (a second open tab,
+  // a network retry arriving at nearly the same time as the first request)
+  // from both reading the pre-submission status before either has written
+  // SUBMITTED. This update is conditioned on status still being what we
+  // read, evaluated atomically by the database in one statement — so at
+  // most one concurrent request can ever win it.
+  const claim = await prisma.phaseTask.updateMany({
+    where: { id, status: { notIn: ["LOCKED", "SUBMITTED"] } },
     data: {
       status: "SUBMITTED",
       submissionNotes: parsed.data.notes || null,
       submittedAt: new Date(),
     },
   });
+  if (claim.count === 0) {
+    return NextResponse.json(
+      { error: "This submission is already being reviewed" },
+      { status: 409 }
+    );
+  }
 
   // Readings represent the current submission's measurements, not a history —
   // replace rather than accumulate across resubmissions.
@@ -147,6 +163,10 @@ export async function POST(
       }
     }
   } catch (e) {
+    await prisma.phaseTask.update({
+      where: { id },
+      data: { status: statusBeforeSubmission },
+    });
     return NextResponse.json(
       {
         error: `Submission saved, but the AI review failed: ${(e as Error).message}`,

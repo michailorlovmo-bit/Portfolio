@@ -2,6 +2,18 @@ import { prisma } from "@/lib/prisma";
 import { CATEGORIES, categoryDef, categoryLabel } from "@/lib/categories";
 import { notifyUser } from "@/lib/notifications";
 
+// The core pipeline rule, pulled out as a pure function so it can be unit
+// tested without a database: a phase unlocks once its predecessor is Done
+// AND (if this phase requires it) Telekom has cleared the building.
+export function shouldPhaseUnlock(params: {
+  requiresTelekomApproval: boolean;
+  telekomApproved: boolean;
+  previousDone: boolean;
+}): boolean {
+  const telekomOk = !params.requiresTelekomApproval || params.telekomApproved;
+  return params.previousDone && telekomOk;
+}
+
 // Recomputes LOCKED/TODO for every phase task of a building based on pipeline
 // order + Telekom clearance. Never touches a phase already past TODO
 // (IN_PROGRESS/SUBMITTED/DONE/NEEDS_REVISION) — those reflect real work done.
@@ -17,8 +29,11 @@ export async function recomputePhaseLocks(buildingId: string) {
   let previousDone = true; // first phase has no predecessor
   for (const task of tasks) {
     const def = categoryDef(task.category);
-    const telekomOk = !def.requiresTelekomApproval || building.telekomApprovedAt !== null;
-    const shouldUnlock = previousDone && telekomOk;
+    const shouldUnlock = shouldPhaseUnlock({
+      requiresTelekomApproval: def.requiresTelekomApproval,
+      telekomApproved: building.telekomApprovedAt !== null,
+      previousDone,
+    });
 
     if (task.status === "LOCKED" && shouldUnlock) {
       await prisma.phaseTask.update({ where: { id: task.id }, data: { status: "TODO" } });

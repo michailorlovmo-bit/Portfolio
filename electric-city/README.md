@@ -188,11 +188,15 @@ Runs the Vitest unit suite (`src/lib/*.test.ts`) covering the pure logic
 that's easiest to get subtly wrong without noticing: the fixed pipeline
 categories, date/badge formatting, upload type/size validation (including
 that a mislabeled file is actually rejected, not just a well-labeled one
-accepted), and login lockout behavior. It doesn't touch a database, so it
-runs in under a second and needs no setup beyond `npm install`. Route
-handlers and React components aren't covered yet — this is a starting
-safety net for the logic most likely to regress silently, not full
-coverage.
+accepted), login lockout behavior, and the phase-unlock rule itself (a
+building's phases only advance when the previous one is Done *and*, for
+Earthworks, Telekom has cleared the building — `shouldPhaseUnlock` in
+`src/lib/phaseGating.ts` is the one place that rule is decided, pulled out
+of the database-touching code specifically so it can be tested in
+isolation). It doesn't touch a database, so it runs in under a second and
+needs no setup beyond `npm install`. Route handlers and React components
+aren't covered yet — this is a starting safety net for the logic most
+likely to regress silently, not full coverage.
 
 ## Deploying with Docker
 
@@ -252,6 +256,16 @@ pass/fail + note for every checklist item. `APPROVED` marks the phase Done
 and unlocks the next phase (subject to the Telekom gate); anything else
 leaves it as `NEEDS_REVISION` so the technician can add files/notes and
 resubmit. Managers can always override via the phase task page.
+
+Submitting is guarded against being fired twice at once (a second open tab,
+a network retry landing moments after the first attempt): the status flip
+to `SUBMITTED` is a single conditional database update rather than a
+read-then-write, so at most one concurrent request can ever win it — the
+other gets turned away before it ever reaches Gemini, instead of both
+racing to create a review for the same submission. If the AI call itself
+fails (Gemini down, no API key configured), the phase's status is put back
+to what it was before the attempt, so it isn't left permanently stuck on
+`SUBMITTED` unable to be resubmitted.
 
 ## Notes on this setup
 
