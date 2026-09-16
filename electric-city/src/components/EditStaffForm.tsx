@@ -64,7 +64,7 @@ export default function EditStaffForm({
         className="mt-2 inline-block text-xs text-slate-500 hover:underline"
         onClick={() => setOpen(true)}
       >
-        {t.staffPage.edit}
+        {t.common.edit}
       </button>
     );
   }

@@ -15,6 +15,7 @@ const en = {
     saving: "Saving...",
     cancel: "Cancel",
     add: "Add",
+    edit: "Edit",
     remove: "Remove",
     search: "Search",
     clear: "Clear",
@@ -41,6 +42,7 @@ const en = {
     telekomCleared: "Telekom clearance recorded",
     telekomUndone: "Telekom clearance undone",
     checklistItemAdded: "Checklist item added",
+    checklistItemUpdated: "Checklist item updated",
     checklistItemRemoved: "Checklist item removed",
     assignmentSaved: "Assignment saved",
     statusUpdated: "Status updated",
@@ -200,7 +202,6 @@ const en = {
     statisticsBadge: "Statistics",
     joined: "Joined {date}",
     subcontractorBadge: "Subcontractor: {name}",
-    edit: "Edit",
     deactivate: "Deactivate",
     reactivate: "Reactivate",
     grantStats: "Grant statistics access",
@@ -229,6 +230,7 @@ const en = {
   checklistEditor: {
     noItemsYet: "No checklist items yet.",
     addItemPlaceholder: "Add a checklist item...",
+    editItemLabel: "Checklist item text",
   },
   statisticsPage: {
     title: "Statistics",
@@ -304,6 +306,7 @@ const el: Dictionary = {
     saving: "Αποθήκευση...",
     cancel: "Ακύρωση",
     add: "Προσθήκη",
+    edit: "Επεξεργασία",
     remove: "Αφαίρεση",
     search: "Αναζήτηση",
     clear: "Καθαρισμός",
@@ -330,6 +333,7 @@ const el: Dictionary = {
     telekomCleared: "Καταγράφηκε η έγκριση Telekom",
     telekomUndone: "Αναιρέθηκε η έγκριση Telekom",
     checklistItemAdded: "Προστέθηκε στοιχείο λίστας ελέγχου",
+    checklistItemUpdated: "Το στοιχείο λίστας ελέγχου ενημερώθηκε",
     checklistItemRemoved: "Αφαιρέθηκε στοιχείο λίστας ελέγχου",
     assignmentSaved: "Η ανάθεση αποθηκεύτηκε",
     statusUpdated: "Η κατάσταση ενημερώθηκε",
@@ -489,7 +493,6 @@ const el: Dictionary = {
     statisticsBadge: "Στατιστικά",
     joined: "Εγγραφή: {date}",
     subcontractorBadge: "Υπεργολάβος: {name}",
-    edit: "Επεξεργασία",
     deactivate: "Απενεργοποίηση",
     reactivate: "Επανενεργοποίηση",
     grantStats: "Παραχώρηση πρόσβασης στατιστικών",
@@ -518,6 +521,7 @@ const el: Dictionary = {
   checklistEditor: {
     noItemsYet: "Δεν υπάρχουν ακόμα στοιχεία λίστας ελέγχου.",
     addItemPlaceholder: "Προσθήκη στοιχείου λίστας ελέγχου...",
+    editItemLabel: "Κείμενο στοιχείου λίστας ελέγχου",
   },
   statisticsPage: {
     title: "Στατιστικά",

@@ -54,8 +54,9 @@ go find it.
   instead of sitting stuck on an account nobody can sign into anymore; their
   history is kept), assigns one staff member and an optional due date per
   phase, maintains the reusable checklist template for each category
-  (Settings → Checklists), toggles Telekom clearance, and can override any
-  AI verdict.
+  (Settings → Checklists — each item can be edited in place, not just
+  added/removed, so fixing a typo doesn't bump it to the end of the list),
+  toggles Telekom clearance, and can override any AI verdict.
 - **Staff**: sees only the phase tasks assigned to them, uploads files, adds
   structured test readings (e.g. OTDR/power-meter values — free-form
   label/value/unit so it fits any instrument), and submits with notes. Each
