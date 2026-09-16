@@ -74,11 +74,17 @@ go find it.
 
 ## Buildings list & notifications
 
-The Buildings list has a search box (name/address), a per-building progress
-bar (phases done / 5), CSV export of whatever's currently filtered, and
-filter tabs — All / Awaiting Telekom / Needs attention / Overdue /
-Completed / Archived — computed from each building's phase statuses and due
-dates. The bell icon in the header shows in-app notifications (polled every
+The Buildings list has a search box (name/address; submitting on Enter is
+handled explicitly rather than relying on the browser's native default,
+since that's inconsistent across mobile soft-keyboards and field techs use
+this mostly on phones), a per-building progress bar (phases done / 5), CSV
+export of whatever's currently filtered, and filter tabs — All / Awaiting
+Telekom / Needs attention / Overdue / Completed / Archived — computed from
+each building's phase statuses and due dates. It composes correctly with
+the filter tabs (searching within "Needs attention" stays scoped to that
+tab) and the "Clear" link that appears once you've searched returns to
+whichever tab you were on. The bell icon in the header shows in-app
+notifications (polled every
 30s): staff get notified when a phase they're assigned to unlocks, and when
 a submission comes back `NEEDS_REVISION` or `FLAGGED`; managers
 additionally get notified on `FLAGGED` verdicts specifically, since those

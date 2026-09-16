@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import NewBuildingForm from "@/components/NewBuildingForm";
 import ExportCsvButton from "@/components/ExportCsvButton";
+import BuildingsSearchInput from "@/components/BuildingsSearchInput";
 import { CATEGORIES, categoryDef } from "@/lib/categories";
 import { statusBadgeClass, formatDate } from "@/lib/format";
 import { getDictionary } from "@/lib/i18n/server";
@@ -139,13 +140,7 @@ export default async function BuildingsPage({
             <circle cx="11" cy="11" r="7" />
             <path d="m21 21-4.35-4.35" />
           </svg>
-          <input
-            type="search"
-            name="q"
-            defaultValue={query}
-            placeholder={t.buildings.searchPlaceholder}
-            className="input pl-9"
-          />
+          <BuildingsSearchInput defaultValue={query} placeholder={t.buildings.searchPlaceholder} />
         </div>
         <button type="submit" className="btn-secondary">
           {t.common.search}

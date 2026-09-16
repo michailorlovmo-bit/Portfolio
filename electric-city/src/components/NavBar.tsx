@@ -22,11 +22,11 @@ export default async function NavBar() {
             <Image
               src="/logo.jpg"
               alt=""
-              width={30}
-              height={30}
+              width={40}
+              height={40}
               className="rounded-md shadow-sm ring-1 ring-slate-900/5"
             />
-            {t.app.name}
+            <span className="text-lg">{t.app.name}</span>
           </Link>
           <nav className="flex flex-wrap gap-x-1 gap-y-1 text-sm text-slate-600">
             <Link href="/" className="rounded-md px-2 py-1 transition-colors hover:bg-slate-100 hover:text-slate-900">
