@@ -272,6 +272,11 @@ to what it was before the attempt, so it isn't left permanently stuck on
 - Files are stored on local disk under `uploads/` (gitignored); the database
   is a local SQLite file (`dev.db`). Fine for one server — move to
   S3-compatible storage and Postgres if you outgrow it.
+- Assigning a phase is validated server-side, not just steered by the UI:
+  the assign-phase API independently checks the target is an active staff
+  account (not deactivated, not a manager, not a made-up id) before saving
+  it, since the API is a separate trust boundary from whatever the assign
+  dropdown happens to offer.
 - Login is throttled server-side: 5 failed attempts on the same email within
   15 minutes locks that login out for 15 minutes, tracked in-process (no
   extra infra needed at this scale — see `src/lib/loginRateLimit.ts`). A

@@ -75,6 +75,19 @@ export async function PATCH(
     if (!isManager) {
       return NextResponse.json({ error: "Only managers can reassign a phase" }, { status: 403 });
     }
+    if (parsed.data.assignedToId !== null) {
+      // The assign form only ever offers active staff, but the API is a
+      // separate trust boundary — without this, a raw request could park a
+      // phase on a deactivated, non-existent, or manager account, silently
+      // making it unreachable from anyone's "your tasks" list.
+      const assignee = await prisma.user.findUnique({ where: { id: parsed.data.assignedToId } });
+      if (!assignee || !assignee.active || assignee.role !== "STAFF") {
+        return NextResponse.json(
+          { error: "Assignee must be an active staff account" },
+          { status: 400 }
+        );
+      }
+    }
     data.assignedToId = parsed.data.assignedToId;
   }
 

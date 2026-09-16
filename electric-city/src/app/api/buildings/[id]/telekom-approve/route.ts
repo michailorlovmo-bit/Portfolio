@@ -41,6 +41,9 @@ export async function DELETE(
 
   const { id } = await params;
 
+  const building = await prisma.building.findUnique({ where: { id } });
+  if (!building) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
   const updated = await prisma.building.update({
     where: { id },
     data: { telekomApprovedAt: null, telekomApprovedById: null },

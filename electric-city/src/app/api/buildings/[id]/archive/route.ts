@@ -15,6 +15,9 @@ export async function POST(
 
   const { id } = await params;
 
+  const existing = await prisma.building.findUnique({ where: { id } });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
   const building = await prisma.building.update({
     where: { id },
     data: { archived: true, archivedAt: new Date() },
@@ -34,6 +37,9 @@ export async function DELETE(
   }
 
   const { id } = await params;
+
+  const existing = await prisma.building.findUnique({ where: { id } });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const building = await prisma.building.update({
     where: { id },
