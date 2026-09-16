@@ -77,7 +77,10 @@ go find it.
 The Buildings list has a search box (name/address; submitting on Enter is
 handled explicitly rather than relying on the browser's native default,
 since that's inconsistent across mobile soft-keyboards and field techs use
-this mostly on phones), a per-building progress bar (phases done / 5), CSV
+this mostly on phones; the magnifying-glass icon and typed text used to
+visually overlap on both desktop and mobile — a CSS layering bug explained
+below, not specific to this input — now fixed), a per-building progress
+bar (phases done / 5), CSV
 export of whatever's currently filtered, and filter tabs — All / Awaiting
 Telekom / Needs attention / Overdue / Completed / Archived — computed from
 each building's phase statuses and due dates. It composes correctly with
@@ -424,7 +427,19 @@ to what it was before the attempt, so it isn't left permanently stuck on
   shared classes (`.card`, `.card-link`, `.btn-primary`, `.badge-*`, etc.)
   rather than repeated inline utility soup, so the look stays consistent
   as pages get added. The UI font is Inter (self-hosted via `next/font`,
-  Greek subset included).
+  Greek subset included). Those classes live inside `@layer components`
+  in `globals.css`, not as bare top-level rules — without `@layer`, a rule
+  is ordered by where it physically sits in the file, so `.input`'s own
+  `px-3` was silently beating a `pl-9` applied alongside it on the same
+  element (equal CSS specificity, later in the compiled file wins), which
+  is exactly what caused the search bar's icon and text to overlap.
+  `@layer components` makes Tailwind enforce its real ordering (utilities
+  always beat components) regardless of source position, so adding a
+  utility class next to any shared class here now reliably overrides it
+  as expected — this was a real, reproducible bug (confirmed via computed
+  `padding-left`: 12px instead of the intended 36px), not just a visual
+  nitpick, and it could have silently affected any future element that
+  combines a utility with one of these shared classes, not only this input.
 - `npm audit` currently reports one high-severity issue in `postcss`
   (pulled in by Next.js's build tooling, not something this app's own code
   uses at runtime). The only available fix is upgrading to Next.js 16, a
