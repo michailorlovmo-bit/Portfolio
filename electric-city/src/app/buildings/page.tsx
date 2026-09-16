@@ -41,7 +41,7 @@ export default async function BuildingsPage({
     include: {
       phaseTasks: {
         orderBy: { orderIndex: "asc" },
-        include: { assignedTo: { select: { id: true, name: true } } },
+        include: { assignedTo: { select: { id: true, name: true, subcontractorName: true } } },
       },
     },
     orderBy: { createdAt: "desc" },
@@ -250,7 +250,13 @@ export default async function BuildingsPage({
                       {categoryDef(c.key).labelEl}
                     </span>
                     {task?.assignedTo && (
-                      <span className="text-slate-400">({task.assignedTo.name})</span>
+                      <span className="text-slate-400">
+                        (
+                        {task.assignedTo.subcontractorName
+                          ? `${task.assignedTo.name} · ${task.assignedTo.subcontractorName}`
+                          : task.assignedTo.name}
+                        )
+                      </span>
                     )}
                   </span>
                 );

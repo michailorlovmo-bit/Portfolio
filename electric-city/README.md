@@ -43,10 +43,10 @@ go find it.
   companies in the stats) — leave it blank for in-house staff; a
   subcontractor account works exactly like an in-house one, it's just
   labeled with its company everywhere staff show up (Staff page, the assign
-  dropdown, statistics, every "Assigned to" line on the building page, the
-  phase task page, and the printable report) so you can tell who's who and,
-  eventually, who to bill — deactivating someone unassigns any of their
-  phases that were still
+  dropdown, statistics, the buildings list, every "Assigned to" line on the
+  building page, the phase task page, and the printable report) so you can
+  tell who's who and, eventually, who to bill — deactivating someone
+  unassigns any of their phases that were still
   open, so that work resurfaces on the dashboard's "Needs assignment" list
   instead of sitting stuck on an account nobody can sign into anymore; their
   history is kept), assigns one staff member and an optional due date per
