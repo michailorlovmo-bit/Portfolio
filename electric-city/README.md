@@ -300,6 +300,11 @@ to what it was before the attempt, so it isn't left permanently stuck on
   the exported file is opened — potentially leaking data via `HYPERLINK()`
   or worse. Every cell is checked and, if needed, neutralized before being
   written (`src/lib/csv.ts`).
+- Baseline security headers apply to every response (`next.config.mjs`):
+  `X-Frame-Options: DENY` so the app can't be embedded in a hidden iframe
+  on another site for clickjacking (tricking a logged-in manager into
+  clicking a real "deactivate," "archive," or "approve" button they can't
+  see), plus `X-Content-Type-Options: nosniff` and a `Referrer-Policy`.
 - The 5 categories and their order are fixed in `src/lib/categories.ts`. If
   the pipeline itself changes (not just checklist contents), that file is
   where to edit it.
