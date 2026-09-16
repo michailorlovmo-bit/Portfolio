@@ -116,7 +116,9 @@ export default function PhaseSubmitPanel({
       )}
 
       <div>
-        <label className="label">{t.submitPanel.files}</label>
+        <label htmlFor="submit-file-input" className="label">
+          {t.submitPanel.files}
+        </label>
         {files.length > 0 && (
           <ul className="mb-2 space-y-1 text-sm text-slate-600">
             {files.map((f) => (
@@ -126,6 +128,7 @@ export default function PhaseSubmitPanel({
         )}
         <div className="flex flex-wrap items-center gap-2">
           <input
+            id="submit-file-input"
             ref={fileInputRef}
             type="file"
             multiple
@@ -189,8 +192,11 @@ export default function PhaseSubmitPanel({
       </div>
 
       <div>
-        <label className="label">{t.submitPanel.notesLabel}</label>
+        <label htmlFor="submit-notes" className="label">
+          {t.submitPanel.notesLabel}
+        </label>
         <textarea
+          id="submit-notes"
           rows={3}
           className="input"
           placeholder={t.submitPanel.notesPlaceholder}

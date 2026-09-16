@@ -47,8 +47,11 @@ export default function ChangePasswordForm() {
       <h2 className="font-medium text-slate-900">{t.changePassword.title}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="label">{t.changePassword.currentPassword}</label>
+          <label htmlFor="current-password" className="label">
+            {t.changePassword.currentPassword}
+          </label>
           <input
+            id="current-password"
             required
             type="password"
             className="input"
@@ -57,8 +60,11 @@ export default function ChangePasswordForm() {
           />
         </div>
         <div>
-          <label className="label">{t.changePassword.newPassword}</label>
+          <label htmlFor="new-password" className="label">
+            {t.changePassword.newPassword}
+          </label>
           <input
+            id="new-password"
             required
             minLength={8}
             type="password"
@@ -68,8 +74,11 @@ export default function ChangePasswordForm() {
           />
         </div>
         <div>
-          <label className="label">{t.changePassword.confirmNewPassword}</label>
+          <label htmlFor="confirm-new-password" className="label">
+            {t.changePassword.confirmNewPassword}
+          </label>
           <input
+            id="confirm-new-password"
             required
             minLength={8}
             type="password"

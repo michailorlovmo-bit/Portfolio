@@ -64,8 +64,11 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="label">{t.auth.email}</label>
+              <label htmlFor="login-email" className="label">
+                {t.auth.email}
+              </label>
               <input
+                id="login-email"
                 type="email"
                 required
                 className="input"
@@ -74,8 +77,11 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="label">{t.auth.password}</label>
+              <label htmlFor="login-password" className="label">
+                {t.auth.password}
+              </label>
               <input
+                id="login-password"
                 type="password"
                 required
                 className="input"

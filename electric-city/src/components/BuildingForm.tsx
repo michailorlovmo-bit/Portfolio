@@ -159,8 +159,11 @@ export default function BuildingForm({
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="sm:col-span-2">
-            <label className="label">{t.buildingForm.name}</label>
+            <label htmlFor="building-name" className="label">
+              {t.buildingForm.name}
+            </label>
             <input
+              id="building-name"
               required
               className="input"
               value={values.name}
@@ -168,8 +171,11 @@ export default function BuildingForm({
             />
           </div>
           <div>
-            <label className="label">{t.buildingForm.totalFloors}</label>
+            <label htmlFor="building-total-floors" className="label">
+              {t.buildingForm.totalFloors}
+            </label>
             <input
+              id="building-total-floors"
               required
               type="number"
               min={1}
@@ -180,8 +186,11 @@ export default function BuildingForm({
           </div>
         </div>
         <div>
-          <label className="label">{t.buildingForm.address}</label>
+          <label htmlFor="building-address" className="label">
+            {t.buildingForm.address}
+          </label>
           <input
+            id="building-address"
             className="input"
             value={values.address}
             onChange={(e) => setValues((v) => ({ ...v, address: e.target.value }))}

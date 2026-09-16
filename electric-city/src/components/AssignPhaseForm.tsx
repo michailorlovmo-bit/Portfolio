@@ -52,6 +52,7 @@ export default function AssignPhaseForm({
       <h3 className="font-medium text-slate-900">{t.assignForm.title}</h3>
       <div className="flex flex-wrap gap-2">
         <select
+          aria-label={t.assignForm.title}
           className="input min-w-[160px] flex-1"
           value={assigneeId}
           onChange={(e) => setAssigneeId(e.target.value)}
@@ -79,8 +80,11 @@ export default function AssignPhaseForm({
           )}
         </select>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-slate-500">{t.assignForm.due}</label>
+          <label htmlFor="assign-due-date" className="text-sm text-slate-500">
+            {t.assignForm.due}
+          </label>
           <input
+            id="assign-due-date"
             type="date"
             className="input"
             value={dueDate}

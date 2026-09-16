@@ -297,7 +297,14 @@ to what it was before the attempt, so it isn't left permanently stuck on
   where to edit it.
 - No self-serve signup — only managers create accounts, from the Staff page.
 - The UI is responsive down to phone width, since field techs will mostly be
-  submitting phases from a job site rather than a desk.
+  submitting phases from a job site rather than a desk (checked again after
+  adding the dashboard, the statistics subcontractor breakdown, and the
+  phase-task building-spec panel — all hold up at 375px without extra work,
+  since they reuse the same flex-wrap/`overflow-x-auto` patterns as the rest
+  of the app).
+- Form labels are wired to their inputs with `htmlFor`/`id` (not just
+  visual proximity), so clicking a label focuses the right field and screen
+  readers announce it correctly.
 - All dates render with a pinned locale (`en-GB`/`el-GR` matching the
   selected language) rather than the server's or browser's ambient default,
   so server-rendered and client-hydrated output always match — a mismatch

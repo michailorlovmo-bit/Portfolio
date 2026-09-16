@@ -69,12 +69,23 @@ export default function NewStaffForm({ existingSubcontractors }: { existingSubco
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="label">{t.newStaffForm.name}</label>
-            <input required className="input" value={name} onChange={(e) => setName(e.target.value)} />
+            <label htmlFor="new-staff-name" className="label">
+              {t.newStaffForm.name}
+            </label>
+            <input
+              id="new-staff-name"
+              required
+              className="input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </div>
           <div>
-            <label className="label">{t.newStaffForm.email}</label>
+            <label htmlFor="new-staff-email" className="label">
+              {t.newStaffForm.email}
+            </label>
             <input
+              id="new-staff-email"
               required
               type="email"
               className="input"
@@ -85,8 +96,11 @@ export default function NewStaffForm({ existingSubcontractors }: { existingSubco
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label className="label">{t.newStaffForm.tempPassword}</label>
+            <label htmlFor="new-staff-password" className="label">
+              {t.newStaffForm.tempPassword}
+            </label>
             <input
+              id="new-staff-password"
               required
               minLength={8}
               type="text"
@@ -96,8 +110,11 @@ export default function NewStaffForm({ existingSubcontractors }: { existingSubco
             />
           </div>
           <div>
-            <label className="label">{t.newStaffForm.role}</label>
+            <label htmlFor="new-staff-role" className="label">
+              {t.newStaffForm.role}
+            </label>
             <select
+              id="new-staff-role"
               className="input"
               value={role}
               onChange={(e) => setRole(e.target.value as "STAFF" | "MANAGER")}
@@ -107,8 +124,15 @@ export default function NewStaffForm({ existingSubcontractors }: { existingSubco
             </select>
           </div>
           <div>
-            <label className="label">{t.newStaffForm.category}</label>
-            <select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
+            <label htmlFor="new-staff-category" className="label">
+              {t.newStaffForm.category}
+            </label>
+            <select
+              id="new-staff-category"
+              className="input"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
               <option value="">{t.common.none}</option>
               {CATEGORIES.map((c) => (
                 <option key={c.key} value={c.key}>
@@ -119,8 +143,11 @@ export default function NewStaffForm({ existingSubcontractors }: { existingSubco
           </div>
         </div>
         <div>
-          <label className="label">{t.newStaffForm.subcontractor}</label>
+          <label htmlFor="new-staff-subcontractor" className="label">
+            {t.newStaffForm.subcontractor}
+          </label>
           <input
+            id="new-staff-subcontractor"
             className="input"
             list="subcontractor-options"
             placeholder={t.newStaffForm.subcontractorPlaceholder}
