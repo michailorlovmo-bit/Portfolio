@@ -33,7 +33,7 @@ export default async function BuildingDetailPage({
       phaseTasks: {
         orderBy: { orderIndex: "asc" },
         include: {
-          assignedTo: { select: { id: true, name: true } },
+          assignedTo: { select: { id: true, name: true, subcontractorName: true } },
           reviews: { orderBy: { createdAt: "desc" } },
         },
       },
@@ -245,7 +245,14 @@ export default async function BuildingDetailPage({
                       <span className={statusBadgeClass(task.status)}>{t.status[task.status as keyof typeof t.status]}</span>
                     </div>
                     <p className="mt-0.5 text-sm text-slate-500">
-                      {task.assignedTo ? tr(t.buildingDetail.assignedTo, { name: task.assignedTo.name }) : t.common.unassigned}
+                      {task.assignedTo
+                        ? task.assignedTo.subcontractorName
+                          ? tr(t.buildingDetail.assignedToSubcontractor, {
+                              name: task.assignedTo.name,
+                              subcontractor: task.assignedTo.subcontractorName,
+                            })
+                          : tr(t.buildingDetail.assignedTo, { name: task.assignedTo.name })
+                        : t.common.unassigned}
                     </p>
                   </div>
                 </div>

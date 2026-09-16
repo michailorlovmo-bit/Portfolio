@@ -36,7 +36,7 @@ export default async function BuildingReportPage({
       phaseTasks: {
         orderBy: { orderIndex: "asc" },
         include: {
-          assignedTo: { select: { id: true, name: true } },
+          assignedTo: { select: { id: true, name: true, subcontractorName: true } },
           checklistItems: { orderBy: { order: "asc" } },
           files: { orderBy: { createdAt: "desc" } },
           testReadings: true,
@@ -154,7 +154,12 @@ export default async function BuildingReportPage({
                 </div>
                 <span className="text-sm text-slate-500">
                   {task.assignedTo
-                    ? tr(t.buildingDetail.assignedTo, { name: task.assignedTo.name })
+                    ? task.assignedTo.subcontractorName
+                      ? tr(t.buildingDetail.assignedToSubcontractor, {
+                          name: task.assignedTo.name,
+                          subcontractor: task.assignedTo.subcontractorName,
+                        })
+                      : tr(t.buildingDetail.assignedTo, { name: task.assignedTo.name })
                     : t.common.unassigned}
                 </span>
               </div>

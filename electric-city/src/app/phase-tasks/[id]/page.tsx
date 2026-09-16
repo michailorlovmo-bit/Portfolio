@@ -39,7 +39,7 @@ export default async function PhaseTaskDetailPage({
           floorBoxes: { orderBy: { floorNumber: "asc" } },
         },
       },
-      assignedTo: { select: { id: true, name: true } },
+      assignedTo: { select: { id: true, name: true, subcontractorName: true } },
       checklistItems: { orderBy: { order: "asc" } },
       files: { orderBy: { createdAt: "desc" } },
       reviews: { orderBy: { createdAt: "desc" } },
@@ -87,7 +87,14 @@ export default async function PhaseTaskDetailPage({
           </span>
         </div>
         <p className="mt-1.5 pl-12 text-sm text-slate-500">
-          {task.assignedTo ? tr(t.phaseTask.assignedTo, { name: task.assignedTo.name }) : t.common.unassigned}
+          {task.assignedTo
+            ? task.assignedTo.subcontractorName
+              ? tr(t.phaseTask.assignedToSubcontractor, {
+                  name: task.assignedTo.name,
+                  subcontractor: task.assignedTo.subcontractorName,
+                })
+              : tr(t.phaseTask.assignedTo, { name: task.assignedTo.name })
+            : t.common.unassigned}
           {task.dueDate && (
             <>
               {" · "}

@@ -132,6 +132,7 @@ const en = {
     colNotes: "Notes",
     phases: "Phases",
     assignedTo: "Assigned to {name}",
+    assignedToSubcontractor: "Assigned to {name} ({subcontractor})",
     editBuilding: "Edit building",
     archivedBanner: "This building is archived. It's hidden from the main list but nothing was deleted.",
     activity: "Activity",
@@ -156,6 +157,7 @@ const en = {
     aiReviewHistory: "AI review history",
     due: "Due {date}",
     assignedTo: "Assigned to {name}",
+    assignedToSubcontractor: "Assigned to {name} ({subcontractor})",
   },
   submitPanel: {
     title: "Submit your work",
@@ -417,6 +419,7 @@ const el: Dictionary = {
     colNotes: "Σημειώσεις",
     phases: "Φάσεις",
     assignedTo: "Ανατέθηκε σε {name}",
+    assignedToSubcontractor: "Ανατέθηκε σε {name} ({subcontractor})",
     editBuilding: "Επεξεργασία κτιρίου",
     archivedBanner: "Αυτό το κτίριο είναι αρχειοθετημένο. Είναι κρυφό από τη βασική λίστα, αλλά δεν έχει διαγραφεί τίποτα.",
     activity: "Δραστηριότητα",
@@ -441,6 +444,7 @@ const el: Dictionary = {
     aiReviewHistory: "Ιστορικό αξιολόγησης AI",
     due: "Προθεσμία {date}",
     assignedTo: "Ανατέθηκε σε {name}",
+    assignedToSubcontractor: "Ανατέθηκε σε {name} ({subcontractor})",
   },
   submitPanel: {
     title: "Υποβολή εργασίας",
