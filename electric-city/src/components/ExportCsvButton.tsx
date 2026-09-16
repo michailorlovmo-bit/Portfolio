@@ -1,19 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n/client";
-
-function toCsv(rows: (string | number)[][]): string {
-  return rows
-    .map((row) =>
-      row
-        .map((cell) => {
-          const s = String(cell ?? "");
-          return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-        })
-        .join(",")
-    )
-    .join("\n");
-}
+import { toCsv } from "@/lib/csv";
 
 export default function ExportCsvButton({
   rows,

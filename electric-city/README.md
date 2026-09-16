@@ -188,12 +188,14 @@ Runs the Vitest unit suite (`src/lib/*.test.ts`) covering the pure logic
 that's easiest to get subtly wrong without noticing: the fixed pipeline
 categories, date/badge formatting, upload type/size validation (including
 that a mislabeled file is actually rejected, not just a well-labeled one
-accepted), login lockout behavior, and the phase-unlock rule itself (a
+accepted), login lockout behavior, the phase-unlock rule itself (a
 building's phases only advance when the previous one is Done *and*, for
 Earthworks, Telekom has cleared the building — `shouldPhaseUnlock` in
 `src/lib/phaseGating.ts` is the one place that rule is decided, pulled out
 of the database-touching code specifically so it can be tested in
-isolation). It doesn't touch a database, so it runs in under a second and
+isolation), and CSV export's formula-injection guard (every dangerous
+leading character, checked against the exact function the export button
+calls). It doesn't touch a database, so it runs in under a second and
 needs no setup beyond `npm install`. Route handlers and React components
 aren't covered yet — this is a starting safety net for the logic most
 likely to regress silently, not full coverage.
@@ -292,6 +294,12 @@ to what it was before the attempt, so it isn't left permanently stuck on
 - The app is installable as a PWA (manifest + icons in `src/app/manifest.ts`
   and `public/icons/`) — on a phone, "Add to Home Screen" gives field techs
   a full-screen app icon instead of a browser tab.
+- CSV exports (buildings, statistics) guard against formula/CSV injection:
+  a building, staff, or subcontractor name starting with `=`, `+`, `-`, or
+  `@` would otherwise be read as a formula by Excel/Sheets/LibreOffice when
+  the exported file is opened — potentially leaking data via `HYPERLINK()`
+  or worse. Every cell is checked and, if needed, neutralized before being
+  written (`src/lib/csv.ts`).
 - The 5 categories and their order are fixed in `src/lib/categories.ts`. If
   the pipeline itself changes (not just checklist contents), that file is
   where to edit it.
